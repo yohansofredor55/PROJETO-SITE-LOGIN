@@ -1,34 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <nav class="menu">
-        <a class="link" href="index.html">Home</a>
-        <a class="link" href="galeria.html">Galeria</a>
-        <a class="link" href="chat.html">Chat</a>
-        <a class="link" href="login.html">Login</a>
-        <a class="link" href="cadastro.html">Cadastro</a>
-    </nav>
-    
-    <div class="container-chat">
+  <nav class="menu">
+    <a class="link" href="index.html">Home</a>
+    <a class="link" href="galeria.html">Galeria</a>
+    <a class="link" href="chat.html">Chat</a>
+    <a class="link" href="cadastro.html">Cadastro</a>
+    <a class="link" href="login.html">Login</a>
+  </nav>
 
-        <div class="janela-msg">
-            <div class="mensagem">
-                eai quer falar com o neto do homem mais inteligente do universo?
-            </div>
-        </div>
+  <div class="chat-container">
+    <h2 id="boasVindas"> Bem vindo ao porão</h2>
+    <div id="caixaChat"></div>
 
-        <form class="formulario-envio">
-            <input class="inserir" type="text" placeholder="Digite sua Mensagem..."required/>
-            <button class="bpt-chat" type="submit">Enviar</button>
-        </form>
-
+    <div id="inputArea">
+      <input type="text" id="mensagem" placeholder="Digite algo">
+      <button id="btnEnviar">Enviar</button>
     </div>
-    <footer> &copy;Site desenvolvido pelo aluno yohan do CEEP / 2026 Curitiba </footer>
+  </div>
+
+  <script>
+    const usuarioLogado = 'yohan'
+    document.querySelector('#boasVindas').textContent = `${usuarioLogado}, bem vindo`
+
+    const caixaChat = document.querySelector('#caixaChat')
+    const inputMensagem = document.querySelector('#mensagem')
+    const btnEnviar = document.querySelector('#btnEnviar')
+
+    const historicoConversa = []
+
+    function mensagemTela(usuario, texto) {
+      const textoFinal = document.createElement('p')
+      textoFinal.className = 'msg'
+      textoFinal.textContent = `${usuario}: ${texto}`
+      caixaChat.appendChild(textoFinal)
+    }
+
+    btnEnviar.addEventListener('click', async () => {
+      const textoMensagem = inputMensagem.value
+      if (!textoMensagem) return
+
+      mensagemTela(usuarioLogado, textoMensagem)
+      historicoConversa.push({ role: 'user', content: textoMensagem })
+
+      inputMensagem.value = ''
+      btnEnviar.disabled = true
+
+      try {
+        const respostaServidor = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ historico: historicoConversa })
+        })
+
+        const dados = await respostaServidor.json()
+        if (!respostaServidor.ok) {
+          mensagemTela('system', dados.erro)
+          return
+        }
+        mensagemTela('morty', dados.resposta)
+      }
+      catch (erro) {
+        console.error('Erro ao enviar mensagem:', erro)
+      }
+      finally {
+        btnEnviar.disabled = false
+      }
+    })
+  </script>
 </body>
+
 </html>
