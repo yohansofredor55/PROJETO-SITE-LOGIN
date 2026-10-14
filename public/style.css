@@ -1,0 +1,474 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+*{margin: 0; padding: 0; box-sizing: border-box;}
+
+:root{
+    --escuro-cinema:#0b0b0d;
+    --fundo-card: #1e1e24;
+    --laranja: #ff4500;
+    --brilho:#ffcc00;
+    --azul:#03337c;
+}
+
+body{
+    background-image: url(./imagens/portal\ verde.gif);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+body.home{
+    background-image: url("./imagens/cyberpunk laranja.gif");
+}
+
+button{
+    background-color: var(--brilho);
+    color: rgb(0, 0, 0);
+    border-radius: 12px;
+    padding: 10px;
+    font-family: 'bangers', cursive;
+    letter-spacing: 2px;
+    border: none;
+    cursor: pointer;
+}
+button:hover{
+    transform: translateY(-5px);
+    transition: all 0.5s ease;
+    border-color: aliceblue;
+    box-shadow: 0 12px 25px var(--brilho);
+}
+
+.menu{
+    position: sticky;
+    top: 0;
+    background-color: rgba(30,30,36,0.55);
+    padding: 20px;
+    text-align: center;
+    font-style: bangers;
+    box-shadow: 0px 4px 10px 0px var(--brilho);
+    z-index: 1000;
+}
+
+.link{
+    font-family: 'bangers', cursive;
+    text-decoration: none;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    margin: 0 15px;
+    color: #ffcc00;
+}
+.link:hover{
+    color:#00ff40;
+}
+
+.vitrine{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    padding: 60px;
+    margin: 0 auto;
+}
+
+.personagem{
+    border: 3px solid var(--brilho);
+    border-radius: 12px;
+    padding: 25px;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 2px;
+    text-align: center;
+    background-color: rgb(29, 61, 90);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    height: 650px;
+}
+.personagem:hover{
+    transform: translateY(-15px);
+    transition: all 0.5s ease;
+    border-color: aliceblue;
+    box-shadow: 0 12px 25px var(--brilho);
+}
+
+.foto_personagem{
+    border: 3px solid var(--brilho);
+    width: 100%;
+    object-fit: cover;
+    height: 350px;
+    border-radius: 12px;
+}
+.personagem:hover .foto_personagem{
+    border-color: aliceblue;
+}
+
+.nome_personagem{
+    font-family: 'bangers', cursive;
+    letter-spacing: 2px;
+    text-align: center;
+    color: var(--brilho);
+    font-size: 1.8rem;
+    line-height: 2rem;
+}
+
+/* ===== HOME ===== */
+.guerreiro{
+    color: var(--brilho);
+    font-family: 'bangers', cursive;
+    font-size: 5rem;
+    letter-spacing: 8px;
+    text-align: center;
+}
+
+.apresentacao{
+    font-family: 'roboto';
+    font-size: 1.8rem;
+    color: aliceblue;
+    text-align: center;
+}
+
+.balao{
+    font-family: 'roboto';
+    font-size: 1.8rem;
+    color: aliceblue;
+    text-align: center;
+    transform: translateY(50%);
+}
+
+.guerr-head{
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.esquerdo, .direito{
+    max-height: 400px;
+    width: 100%;
+    max-width: 350px;
+    padding: 10px;
+    font-family: 'bangers', cursive;
+    letter-spacing: 2px;
+}
+
+.front{
+    position: absolute;
+    height: 100%;
+    transform: translateX(-50%);
+    left: 50%;
+    filter: drop-shadow(0 0 10px var(--brilho));
+}
+
+.foto{
+    height: 850px;
+}
+
+/* ===== CHAT ===== */
+.container-chat{
+    max-width: 560px;
+    width: 95%;
+    margin: 30px auto;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--fundo-card);
+    border: 3px solid var(--brilho);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(255, 204, 0, 0.25);
+    flex: 1;
+}
+
+.janela-msg{
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    background: linear-gradient(180deg, rgba(11,11,13,0.6) 0%, rgba(30,30,36,0.9) 100%);
+}
+
+.mensagem{
+    max-width: 78%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    font-family: 'Roboto', sans-serif;
+    word-wrap: break-word;
+}
+
+.mensagem.bot{
+    background-color: rgba(3, 51, 124, 0.85);
+    color: #fff;
+    align-self: flex-start;
+    border: 1px solid var(--brilho);
+    border-bottom-left-radius: 4px;
+}
+
+.mensagem.usuario{
+    background-color: rgba(255, 69, 0, 0.85);
+    color: #fff;
+    align-self: flex-end;
+    border: 1px solid var(--brilho);
+    border-bottom-right-radius: 4px;
+}
+
+.formulario-envio{
+    display: flex;
+    padding: 14px;
+    background-color: var(--escuro-cinema);
+    gap: 10px;
+    border-top: 2px solid var(--laranja);
+    align-items: center;
+}
+
+.formulario-envio .inserir{
+    flex: 1;
+    width: auto;
+    min-width: 0;
+    background-color: var(--fundo-card);
+    color: var(--brilho);
+    border: 2px solid var(--laranja);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.95rem;
+}
+
+.formulario-envio .inserir:focus{
+    outline: none;
+    border-color: var(--brilho);
+    box-shadow: 0 0 12px rgba(255, 204, 0, 0.4);
+}
+
+.formulario-envio .bpt-chat{
+    flex-shrink: 0;
+    padding: 12px 20px;
+    background-color: var(--laranja);
+    color: var(--escuro-cinema);
+    border: 2px solid var(--brilho);
+    border-radius: 10px;
+    font-family: 'Bangers', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.formulario-envio .bpt-chat:hover{
+    background-color: var(--brilho);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(255, 204, 0, 0.45);
+}
+
+/* ===== INPUTS GLOBAIS ===== */
+input {
+    background-color: var(--escuro-cinema);
+    color: var(--brilho);
+    border: 2px solid var(--laranja);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+input::placeholder {
+    color: #777;
+}
+
+input:hover,
+input:focus {
+    outline: none;
+    border-color: var(--brilho);
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.45);
+}
+
+/* ===== CADASTRO E LOGIN ===== */
+.conteiner-cadastro {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 40px 20px;
+    flex: 1;
+}
+
+.conteiner-ch1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.conteiner-ch1 h2 {
+    color: var(--brilho);
+    font-family: 'Bangers', cursive;
+    font-size: 2.8rem;
+    letter-spacing: 4px;
+    text-shadow: 0 0 12px rgba(255, 204, 0, 0.5);
+}
+
+.cadastro-envio,
+.login {
+    background-color: var(--fundo-card);
+    border: 3px solid var(--brilho);
+    border-radius: 15px;
+    padding: 40px 45px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 12px 40px rgba(255, 204, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: all 0.4s ease;
+}
+
+.cadastro-envio:hover,
+.login:hover {
+    border-color: aliceblue;
+    box-shadow: 0 16px 50px rgba(255, 204, 0, 0.4);
+    transform: translateY(-6px);
+}
+
+.cadastro-envio label,
+.login label {
+    color: var(--brilho);
+    font-family: 'Bangers', cursive;
+    font-size: 1.15rem;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+}
+
+.cadastro-envio input,
+.login input {
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.cadastro-envio .card,
+.login .card,
+#btnCadastro,
+#btnlogin {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    background-color: var(--laranja);
+    color: var(--escuro-cinema);
+    border: 2px solid var(--brilho);
+    border-radius: 10px;
+    font-family: 'Bangers', cursive;
+    font-size: 1.25rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(255, 69, 0, 0.35);
+}
+
+.cadastro-envio .card:hover,
+.login .card:hover,
+#btnCadastro:hover,
+#btnlogin:hover {
+    background-color: var(--brilho);
+    color: var(--escuro-cinema);
+    border-color: var(--laranja);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(255, 204, 0, 0.5);
+}
+
+#cadMensagem,
+#loginMensagem {
+    margin-top: 18px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    min-height: 24px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+#cadMensagem[style*="color: red"],
+#loginMensagem[style*="color: red"] {
+    background-color: rgba(255, 0, 0, 0.12);
+    border-color: var(--laranja);
+}
+
+#cadMensagem[style*="color: green"],
+#loginMensagem[style*="color: green"] {
+    background-color: rgba(0, 255, 64, 0.12);
+    border-color: #00ff40;
+}
+
+#cadMensagem[style*="color: orange"],
+#loginMensagem[style*="color: orange"] {
+    background-color: rgba(255, 165, 0, 0.12);
+    border-color: var(--laranja);
+}
+
+/* ===== FOOTER ===== */
+footer {
+    margin-top: auto;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: var(--brilho);
+    text-align: center;
+    padding: 18px 20px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.95rem;
+    border-top: 2px solid var(--laranja);
+    box-shadow: 0 -4px 12px rgba(255, 69, 0, 0.3);
+    letter-spacing: 0.5px;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 600px) {
+    .link {
+        font-size: 1.2rem;
+        margin: 0 8px;
+    }
+
+    .container-chat {
+        height: 65vh;
+        margin: 16px auto;
+    }
+
+    .formulario-envio .bpt-chat {
+        padding: 12px 14px;
+        font-size: 1rem;
+    }
+
+    .conteiner-ch1 h2 {
+        font-size: 2.2rem;
+    }
+
+    .cadastro-envio,
+    .login {
+        padding: 28px 22px;
+        border-width: 2px;
+    }
+
+    .cadastro-envio label,
+    .login label {
+        font-size: 1rem;
+    }
+
+    .cadastro-envio .card,
+    .login .card,
+    #btnCadastro,
+    #btnlogin {
+        font-size: 1.1rem;
+        padding: 12px;
+    }
+}
