@@ -2,9 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
+const URL_API = "https://api.groq.com/openai/v1/chat/completions";
+
+const MODELO = "openai/gpt-oss-120b";
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5500;
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -12,8 +16,8 @@ app.use(cors());
 
 const user = [];
 
-app.post('/cadastro', (req, res) => {
-    const { usuario, email, senha } = req.body;
+app.post('/cadastro', (req, res)=>{
+    const {usuario, email, senha} = req.body;
 
     if (!usuario || !email || !senha) {
         return res.status(400).json({
@@ -37,9 +41,9 @@ app.post('/cadastro', (req, res) => {
 
     console.log(`Recebido, aguarde 5 segundo`);
 
-    user.push({ usuario, email, senha });
+    user.push({usuario, email, senha});
 
-    setTimeout(() => {
+    setTimeout(()=>{
         console.log(`Cadastrado o ${usuario} com o Email ${email}`);
 
         res.json({
@@ -49,26 +53,27 @@ app.post('/cadastro', (req, res) => {
     }, 5000);
 });
 
-app.post('/login', (req, res) => {
-    const { email, senha } = req.body;
+app.post('/login', (req, res)=>{
+    const {email, senha} = req.body;
 
     if (!email || !senha) {
-        return res.status(400).json({ erro: "Preencha todos os campos" });
+        return res.status(400).json({erro:"Preencha todos os campos"});
     }
 
-    const emailExiste = user.find((busca) => busca.email.toLowerCase() === email.toLowerCase());
+    const emailExiste = user.find((busca)=> busca.email.toLowerCase() === email.toLowerCase());
 
     if (!emailExiste || emailExiste.senha != senha) {
-        return res.status(400).json({ erro: "Email ou senha incorretos!" });
+        return res.status(400).json({erro:"Email ou senha incorretos!"});
     }
 
     return res.json({
         mensagem: "Login realizado com Sucesso!!",
         usuario: emailExiste.email
     });
-})
 
-app.post('/chat', async (req, res) => {
+ });
+
+ app.post('/chat', async (req, res) => {
     try {
         const API_KEY = process.env.GROQ_API_KEY;
         const historico = req.body.historico || [];
@@ -76,7 +81,7 @@ app.post('/chat', async (req, res) => {
         const persona = [
             {
                 role: "system",
-                content: `Você o morty responda de forma curta e objetiva e bem humorada`
+                content: `Você é morty responda de forma curta e objetiva e bem humorada`
             }
         ];
 
