@@ -64,7 +64,7 @@
             cadMensagem.style.color = 'orange';
 
             try{
-                const respostaBE = await fetch('http://localhost:3000/cadastro', {
+                const respostaBE = await fetch('/cadastro', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
