@@ -1,28 +1,46 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>Chat do Morty</title>
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
     <nav class="menu">
         <a class="link" href="index.html">Home</a>
         <a class="link" href="galeria.html">Galeria</a>
         <a class="link" href="chat.html">Chat</a>
         <a class="link" href="login.html">Login</a>
-        <a class="link" href="cadastro.html">Cadastro</a>
+        <a class="link" id="linkCadastro" href="cadastro.html">Cadastro</a>
+        <button type="button" id="btnLogout" class="link link-logout" hidden>Log-out</button>
     </nav>
 
-    <main class="container-chat">
-      <h2 id="boasVindas"> Chat do Morty</h2>
-        
-            <input class="inserir" type="text" id="mensagem" placeholder="Digite sua mensagem..." aria-label="Digite sua mensagem" autocomplete="off" required>
-            <button class="bpt-chat" id="btnEnviar" >Enviar</button>
-            <div id="caixaChat"></div>
-            
-      
+    <div id="authOverlay" class="auth-overlay" hidden>
+        <div class="auth-modal">
+            <div class="auth-modal-icon">🔒</div>
+            <h2 class="auth-modal-titulo">Acesso restrito</h2>
+            <p class="auth-modal-texto">
+                Para conversar com o Morty no chat, você precisa estar cadastrado e logado.
+            </p>
+            <div class="auth-modal-botoes">
+                <a href="cadastro.html" class="auth-btn auth-btn-primario">Criar conta</a>
+                <a href="login.html" class="auth-btn auth-btn-secundario">Já tenho conta — Login</a>
+            </div>
+            <button type="button" id="btnSairOverlay" class="auth-btn-sair">Voltar ao site</button>
+        </div>
+    </div>
+
+    <main class="chat-container" id="areaChat">
+        <h2 id="boasVindas">Chat do Morty</h2>
+        <div id="caixaChat"></div>
+
+        <div id="inputArea">
+            <input type="text" id="mensagem" placeholder="Digite sua mensagem..." aria-label="Digite sua mensagem" autocomplete="off">
+            <button id="btnEnviar">Enviar</button>
+        </div>
     </main>
 
     <footer>
@@ -30,59 +48,120 @@
     </footer>
 
     <script>
-const usuarioLogado='yohan'
+        const usuarioLogado = localStorage.getItem('usuario');
+        const token = localStorage.getItem('token');
 
-document.querySelector('#boasVindas').textContent=`Olá ${usuarioLogado}, seja bem vindo`
-const caixaChat=document.querySelector('#caixaChat')
-const inputMensagem=document.querySelector('#mensagem')
-const btnEnviar=document.querySelector('#btnEnviar')
+        const authOverlay = document.querySelector('#authOverlay');
+        const areaChat = document.querySelector('#areaChat');
+        const btnSairOverlay = document.querySelector('#btnSairOverlay');
+        const linkCadastro = document.querySelector('#linkCadastro');
+        const btnLogout = document.querySelector('#btnLogout');
+        const caixaChat = document.querySelector('#caixaChat');
+        const inputMensagem = document.querySelector('#mensagem');
+        const btnEnviar = document.querySelector('#btnEnviar');
 
-const historicoConversa=[ ]
+        function bloquearChat() {
+            authOverlay.hidden = false;
+            areaChat.style.pointerEvents = 'none';
+            areaChat.style.filter = 'blur(4px)';
+            areaChat.style.opacity = '0.45';
+        }
 
-function mensagemTela (autor, texto){
+        if (usuarioLogado && token) {
+            linkCadastro.hidden = true;
+            btnLogout.hidden = false;
+            authOverlay.hidden = true;
+            document.querySelector('#boasVindas').textContent = `Olá ${usuarioLogado}, seja bem vindo`;
+        } else {
+            linkCadastro.hidden = false;
+            btnLogout.hidden = true;
+            document.querySelector('#boasVindas').textContent = 'Faça login para usar o chat';
+            bloquearChat();
+        }
 
-    const textoFinal=document.createElement('p')
-    textoFinal.className='msg'
-    textoFinal.textContent=`${autor}, ${texto}`
-    caixaChat.appendChild(textoFinal)}
+        btnLogout.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('usuario');
+            window.location.href = 'index.html';
+        });
 
-btnEnviar.addEventListener('click', async()=>{
-    const textoMensagem=inputMensagem.value.trim()
+        btnSairOverlay?.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
 
-    if (!textoMensagem)return
+        const historicoConversa = [];
 
-    mensagemTela(usuarioLogado, textoMensagem)
-    historicoConversa.push({role:"user", content:textoMensagem})
+        function mensagemTela(autor, texto) {
+            const textoFinal = document.createElement('p');
+            textoFinal.className = 'msg';
+            if (autor === 'Morty') {
+                textoFinal.classList.add('msg-morty');
+            } else if (autor === 'system') {
+                textoFinal.classList.add('msg-system');
+            } else {
+                textoFinal.classList.add('msg-user');
+            }
+            textoFinal.textContent = `${autor}: ${texto}`;
+            caixaChat.appendChild(textoFinal);
+            caixaChat.scrollTop = caixaChat.scrollHeight;
+        }
 
-    inputMensagem.value=''
-    btnEnviar.disabled=true
+        btnEnviar.addEventListener('click', async () => {
+            if (!usuarioLogado || !token) {
+                bloquearChat();
+                return;
+            }
 
-    try{
-        const respostaServidor= await fetch('/chat', {
-            method:'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ historico: historicoConversa})
-        })
+            const textoMensagem = inputMensagem.value.trim();
+            if (!textoMensagem) return;
 
-        const dados=  await respostaServidor.json()
-        if (!respostaServidor.ok) {
+            mensagemTela(usuarioLogado, textoMensagem);
+            historicoConversa.push({ role: 'user', content: textoMensagem });
 
-       
-        mensagemTela('system',dados.erro )
-        return}
+            inputMensagem.value = '';
+            btnEnviar.disabled = true;
 
-        mensagemTela('Morty',dados.resposta )
-    }
+            try {
+                const respostaServidor = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ historico: historicoConversa })
+                });
 
+                const dados = await respostaServidor.json();
 
-    catch(erro){
-        mensagemTela('Sistema', 'Erro ao conectar com o servidor')
-    }
-    finally{
-        btnEnviar.disabled=false
-    }
+                if (respostaServidor.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('usuario');
+                    mensagemTela('system', dados.erro || 'Sessão expirada. Faça login novamente.');
+                    bloquearChat();
+                    return;
+                }
 
-})
+                if (!respostaServidor.ok) {
+                    mensagemTela('system', dados.erro || 'Erro no servidor');
+                    return;
+                }
 
+                mensagemTela('Morty', dados.resposta);
+                historicoConversa.push({ role: 'assistant', content: dados.resposta });
+            } catch (erro) {
+                console.error('Erro ao enviar mensagem:', erro);
+                mensagemTela('system', 'Erro ao conectar com o servidor');
+            } finally {
+                btnEnviar.disabled = false;
+            }
+        });
 
-</script>
+        inputMensagem.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !btnEnviar.disabled) {
+                btnEnviar.click();
+            }
+        });
+    </script>
+</body>
+
+</html>
