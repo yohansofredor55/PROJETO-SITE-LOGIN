@@ -4,204 +4,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat do Morty</title>
+    <title>Galeria</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 
-<body class="pagina-chat">
+<body>
     <nav class="menu">
         <a class="link" href="index.html">Home</a>
         <a class="link" href="galeria.html">Galeria</a>
         <a class="link" href="chat.html">Chat</a>
-        <a class="link" href="login.html">Login</a>
-        <a class="link" id="linkCadastro" href="cadastro.html">Cadastro</a>
-        <button type="button" id="btnLogout" class="link link-logout" hidden>Log-out</button>
+        <a class="link" href="login.html">login</a>
+        <a class="link" href="cadastro.html">Cadastro</a>
     </nav>
+    <div class="vitrine">
+        <article class="personagem">
+            <img src="./imagens/morty smith woah.jpg" alt="morty" class="foto_personagem">
+            <h2 class="nome_personagem">morty smith</h2>
+            <p>O adolescente nervoso que acompanha o Rick em aventuras perigosas pelo multiverso.</p>
+            <button class="btp">Viaje a essa dimensão</button>
+        </article>
 
-    <div id="authOverlay" class="auth-overlay" hidden>
-        <div class="auth-modal">
-            <div class="auth-modal-icon">🔒</div>
-            <h2 class="auth-modal-titulo">Acesso restrito</h2>
-            <p class="auth-modal-texto">
-                Para conversar com o Morty no chat, você precisa estar cadastrado e logado.
-            </p>
-            <div class="auth-modal-botoes">
-                <a href="cadastro.html" class="auth-btn auth-btn-primario">Criar conta</a>
-                <a href="login.html" class="auth-btn auth-btn-secundario">Já tenho conta — Login</a>
-            </div>
-            <button type="button" id="btnSairOverlay" class="auth-btn-sair">Voltar ao site</button>
-        </div>
+        <article class="personagem">
+            <img src="./imagens/rick sanchez.jpg" alt="rick sanchez" class="foto_personagem">
+            <h2 class="nome_personagem">Rick sanchez</h2>
+            <p>O cientista mais louco do multiverso, que inventa aparelhos perigosos e salva o dia do jeito dele.</p>
+            <button class="btp">Viaje a essa dimensão</button>
+        </article>
+
+        <article class="personagem">
+            <img src="./imagens/summer smith.jpg" alt="summer smith" class="foto_personagem">
+            <h2 class="nome_personagem">summer smith</h2>
+            <p>A irmã do Morty, corajosa e determinada a encontrar seu próprio lugar no universo.</p>
+            <button class="btp">Viaje a essa dimensão</button>
+        </article>
+
+        <article class="personagem">
+            <img src="./imagens/jerry smith.jpg" alt="jerry smith" class="foto_personagem">
+            <h2 class="nome_personagem">Jerry smith</h2>
+            <p>O pai da família, inseguro e atrapalhado, que vive tentando provar seu valor para Beth e para o Rick.</p>
+            <button class="btp">Viaje a essa dimensão</button>
+        </article>
+
+         <article class="personagem">
+            <img src="./imagens/beth smith.jpg" alt="" class="foto_personagem">
+            <h2 class="nome_personagem">Beth smith</h2>
+            <p>A esposa do Jerry e filha do Rick, dividida entre família e o desejo de se provar competente.</p>
+            <button class="btp">Viaje a essa dimensão</button>
+        </article>
+
+         <article class="personagem">
+            <img src="./imagens/Beth.PNG.webp" alt="beth espacial" class="foto_personagem">
+            <h2 class="nome_personagem">beth espacial</h2>
+            <p>A versão espacial de Beth, forte e independente, pronta para enfrentar qualquer ameaça cósmica.</p>
+            <button class="btp">Viaje a essa dimensão</button>
+        </article>
+
+          <article class="personagem">
+            <img src="./imagens/evil morty.jfif" alt="morty malvado" class="foto_personagem">
+            <h2 class="nome_personagem">morty maligno</h2>
+            <p>O Morty vilão com ambições sombrias: frio, calculista e pronto para dominar o multiverso.</p>
+            <button class="btp">Viaje a essa dimensão</button>
+        </article>
+
+          <article class="personagem">
+            <img src="./imagens/rick primario.webp" alt="rick primario" class="foto_personagem">
+            <h2 class="nome_personagem">rick prime</h2>
+            <p>O Rick supremo, mais perigoso e poderoso, dono de uma inteligência ainda mais aterrorizante.</p>
+            <button class="btp">Viaje a essa dimensão</button>
+        </article>
+
+             
     </div>
-
-    <main class="chat-container" id="areaChat">
-        <h2 id="boasVindas">Chat do Morty</h2>
-        <div id="caixaChat"></div>
-
-        <div id="inputArea">
-            <input type="text" id="mensagem" placeholder="Digite sua mensagem..." aria-label="Digite sua mensagem" autocomplete="off">
-            <button id="btnEnviar">Enviar</button>
-        </div>
-    </main>
-
-    <footer>
-        <p>©Site desenvolvido pelo aluno Yohan do CEEP / 2026 Curitiba</p>
-    </footer>
-
-    <script>
-        let usuarioLogado = localStorage.getItem('usuario');
-        const token = localStorage.getItem('token');
-
-        const authOverlay = document.querySelector('#authOverlay');
-        const areaChat = document.querySelector('#areaChat');
-        const btnSairOverlay = document.querySelector('#btnSairOverlay');
-        const linkCadastro = document.querySelector('#linkCadastro');
-        const btnLogout = document.querySelector('#btnLogout');
-        const caixaChat = document.querySelector('#caixaChat');
-        const inputMensagem = document.querySelector('#mensagem');
-        const btnEnviar = document.querySelector('#btnEnviar');
-        const boasVindas = document.querySelector('#boasVindas');
-
-        function bloquearChat() {
-            authOverlay.hidden = false;
-            areaChat.style.pointerEvents = 'none';
-            areaChat.style.filter = 'blur(4px)';
-            areaChat.style.opacity = '0.45';
-        }
-
-        function semAcesso() {
-            usuarioLogado = null;
-            localStorage.removeItem('token');
-            localStorage.removeItem('usuario');
-            linkCadastro.hidden = false;
-            btnLogout.hidden = true;
-            boasVindas.textContent = 'Faça login para usar o chat';
-            bloquearChat();
-        }
-
-        function liberarChat(nome) {
-            usuarioLogado = nome;
-            linkCadastro.hidden = true;
-            btnLogout.hidden = false;
-            authOverlay.hidden = true;
-            boasVindas.textContent = `Olá ${nome}, seja bem vindo`;
-            btnEnviar.disabled = false;
-        }
-
-        // Confere com o servidor se o token e valido e pega o nome do usuario
-        async function verificarAcesso() {
-            if (!usuarioLogado || !token) {
-                semAcesso();
-                return;
-            }
-
-            btnEnviar.disabled = true;
-            boasVindas.textContent = 'Verificando acesso...';
-
-            try {
-                const resposta = await fetch('/me', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                if (!resposta.ok) {
-                    semAcesso();
-                    return;
-                }
-
-                const dados = await resposta.json();
-                localStorage.setItem('usuario', dados.usuario);
-                liberarChat(dados.usuario);
-            } catch (erro) {
-                console.error('Erro ao verificar acesso:', erro);
-                mensagemTela('system', 'Erro ao conectar com o servidor');
-                semAcesso();
-            }
-        }
-
-        btnLogout.addEventListener('click', () => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('usuario');
-            window.location.href = 'index.html';
-        });
-
-        btnSairOverlay?.addEventListener('click', () => {
-            window.location.href = 'index.html';
-        });
-
-        const historicoConversa = [];
-
-        function mensagemTela(autor, texto) {
-            const textoFinal = document.createElement('p');
-            textoFinal.className = 'msg';
-            if (autor === 'Morty') {
-                textoFinal.classList.add('msg-morty');
-            } else if (autor === 'system') {
-                textoFinal.classList.add('msg-system');
-            } else {
-                textoFinal.classList.add('msg-user');
-            }
-            textoFinal.textContent = `${autor}: ${texto}`;
-            caixaChat.appendChild(textoFinal);
-            caixaChat.scrollTop = caixaChat.scrollHeight;
-        }
-
-        btnEnviar.addEventListener('click', async () => {
-            if (!usuarioLogado || !token) {
-                bloquearChat();
-                return;
-            }
-
-            const textoMensagem = inputMensagem.value.trim();
-            if (!textoMensagem) return;
-
-            mensagemTela(usuarioLogado, textoMensagem);
-            historicoConversa.push({ role: 'user', content: textoMensagem });
-
-            inputMensagem.value = '';
-            btnEnviar.disabled = true;
-
-            try {
-                const respostaServidor = await fetch('/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ historico: historicoConversa })
-                });
-
-                const dados = await respostaServidor.json();
-
-                if (respostaServidor.status === 401) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('usuario');
-                    mensagemTela('system', dados.erro || 'Sessão expirada. Faça login novamente.');
-                    bloquearChat();
-                    return;
-                }
-
-                if (!respostaServidor.ok) {
-                    mensagemTela('system', dados.erro || 'Erro no servidor');
-                    return;
-                }
-
-                mensagemTela('Morty', dados.resposta);
-                historicoConversa.push({ role: 'assistant', content: dados.resposta });
-            } catch (erro) {
-                console.error('Erro ao enviar mensagem:', erro);
-                mensagemTela('system', 'Erro ao conectar com o servidor');
-            } finally {
-                btnEnviar.disabled = false;
-            }
-        });
-
-        verificarAcesso();
-
-        inputMensagem.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !btnEnviar.disabled) {
-                btnEnviar.click();
-            }
-        });
-    </script>
+    <footer> &copy;Site desenvolvido pelo aluno Yohan do CEEP / 2026 Curitiba </footer>
 </body>
 
 </html>
