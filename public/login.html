@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login</title>
+    <title>Login</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -19,7 +19,7 @@
     
     <div class="conteiner-cadastro">
         <div class="conteiner-ch1">
-            <h2>loginbr</h2><br>
+            <h2>Login</h2><br>
         </div>
 
         <div class="login">
@@ -81,12 +81,29 @@
                     return;
                 }
 
-                loginMensagem.innerText = `${dados.mensagem}: ${dados.perfil}`;
-                loginMensagem.style.color = 'green';
+                // Guarda a sessao para o chat reconhecer o usuario (era isso que faltava e causava o loop)
+                const token = dados.token || dados.accessToken || dados.jwt;
+                const nomeUsuario = dados.usuario || dados.nome || dados.perfil;
 
-                
+                if (!token || !nomeUsuario) {
+                    console.error('Resposta do /login sem token ou nome:', dados);
+                    loginMensagem.innerText = 'O servidor nao enviou o token ou o nome do usuario.';
+                    loginMensagem.style.color = 'red';
+                    return;
+                }
+
+                localStorage.setItem('token', token);
+                localStorage.setItem('usuario', nomeUsuario);
+
+                loginMensagem.innerText = `${dados.mensagem}: ${nomeUsuario}`;
+                loginMensagem.style.color = '#39ff88';
+
                 emailEntrada.value = '';
                 senhaEntrada.value = '';
+
+                setTimeout(() => {
+                    window.location.href = 'chat.html';
+                }, 800);
             }
             catch(erro) {
                 console.error('Erro na requisição:', erro);
