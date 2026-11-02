@@ -82,12 +82,26 @@
                     return;
                 }
 
-                cadMensagem.innerText = `${dados.mensagem}: ${dados.perfil}`;
-                cadMensagem.style.color = 'green';
+                if (!dados.token || !dados.usuario) {
+                    cadMensagem.innerText = 'Cadastro feito, mas o servidor nao enviou o token. Faca login.';
+                    cadMensagem.style.color = 'orange';
+                    return;
+                }
+
+                // Cadastro completo: guarda a sessao e mostra o nome do usuario
+                localStorage.setItem('token', dados.token);
+                localStorage.setItem('usuario', dados.usuario);
+
+                cadMensagem.innerText = `${dados.mensagem} Bem-vindo, ${dados.usuario}! Indo para o chat...`;
+                cadMensagem.style.color = '#39ff88';
 
                 usuarioEntrada.value = '';
                 emailEntrada.value = '';
                 senhaEntrada.value = '';
+
+                setTimeout(() => {
+                    window.location.href = 'chat.html';
+                }, 1500);
             }
             catch(erro) {
                 console.error('Erro na requisição:', erro);
