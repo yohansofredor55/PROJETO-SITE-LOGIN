@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
+import { randomUUID } from 'crypto';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -15,6 +16,7 @@ app.use(express.static('public'));
 app.use(cors());
 
 const user = [];
+const sessoes = new Map(); // token -> { usuario, email }
 
 app.post('/cadastro', (req, res)=>{
     const {usuario, email, senha} = req.body;
@@ -46,9 +48,15 @@ app.post('/cadastro', (req, res)=>{
     setTimeout(()=>{
         console.log(`Cadastrado o ${usuario} com o Email ${email}`);
 
+        // Cadastro completo = ja entra logado (token + nome do usuario)
+        const token = randomUUID();
+        sessoes.set(token, { usuario, email });
+
         res.json({
             mensagem: "Cadastrado com Sucesso!!",
-            perfil: `Perfil ${usuario} cadastrado com o email ${email}`
+            perfil: `Perfil ${usuario} cadastrado com o email ${email}`,
+            token: token,
+            usuario: usuario
         });
     }, 5000);
 });
@@ -66,11 +74,27 @@ app.post('/login', (req, res)=>{
         return res.status(400).json({erro:"Email ou senha incorretos!"});
     }
 
+    const token = randomUUID();
+    sessoes.set(token, { usuario: emailExiste.usuario, email: emailExiste.email });
+
     return res.json({
         mensagem: "Login realizado com Sucesso!!",
-        usuario: emailExiste.email
+        token: token,
+        usuario: emailExiste.usuario
     });
 
+ });
+
+ // O chat usa esta rota para confirmar que o token ainda vale e pegar o nome do usuario
+ app.get('/me', (req, res) => {
+    const token = (req.headers.authorization || '').replace('Bearer ', '');
+    const sessao = sessoes.get(token);
+
+    if (!sessao) {
+        return res.status(401).json({ erro: "Sessão expirada. Faça login novamente." });
+    }
+
+    return res.json({ usuario: sessao.usuario });
  });
 
  app.post('/chat', async (req, res) => {
@@ -78,10 +102,17 @@ app.post('/login', (req, res)=>{
         const API_KEY = process.env.GROQ_API_KEY;
         const historico = req.body.historico || [];
 
+        const token = (req.headers.authorization || '').replace('Bearer ', '');
+        const sessao = sessoes.get(token);
+
+        if (!sessao) {
+            return res.status(401).json({ erro: "Sessão expirada. Faça login novamente." });
+        }
+
         const persona = [
             {
                 role: "system",
-                content: `Você é morty responda de forma curta e objetiva e bem humorada`
+                content: `Você é morty responda de forma curta e objetiva e bem humorada. O nome do usuário com quem você está falando é ${sessao.usuario}. Chame-o pelo nome de vez em quando.`
             }
         ];
 
